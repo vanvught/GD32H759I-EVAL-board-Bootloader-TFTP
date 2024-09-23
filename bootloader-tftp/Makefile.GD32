@@ -1,0 +1,12 @@
+DEFINES =CONFIG_STORE_USE_ROM
+
+DEFINES+=NDEBUG
+
+SRCDIR=
+
+LIBS=
+
+include Common.mk
+include ../firmware-template-gd32/Rules.mk
+
+prerequisites:
