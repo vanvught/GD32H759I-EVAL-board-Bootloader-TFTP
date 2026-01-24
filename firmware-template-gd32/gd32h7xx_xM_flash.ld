@@ -1,8 +1,11 @@
+  __heap_size = DEFINED(__heap_size) ? __heap_size : 4K;
+  __stack_size = DEFINED(__stack_size) ? __stack_size : 32K;
+
 MEMORY
 {
   FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 32K
   ITCMRAM (xrw)   : ORIGIN = 0x00000000, LENGTH = 64K
-  DTCMRAM (xrw)   : ORIGIN = 0x20000000, LENGTH = 128K
+  DTCMRAM (rw)    : ORIGIN = 0x20000000, LENGTH = 128K
   RAM (xrw)       : ORIGIN = 0x24000000, LENGTH = 512K
   RAM1 (xrw)      : ORIGIN = 0x30000000, LENGTH = 16K
   RAM2 (xrw)      : ORIGIN = 0x30004000, LENGTH = 16K
@@ -13,9 +16,6 @@ ENTRY(Reset_Handler)
 
 SECTIONS
 {
-  __heap_size = DEFINED(__heap_size) ? __heap_size : 4K;
-  __stack_size = DEFINED(__stack_size) ? __stack_size : 32K;
-  
   .vectors :
   {
     . = ALIGN(4);
@@ -28,7 +28,7 @@ SECTIONS
   _siitcmram = LOADADDR(.itcmram);
   .itcmram :
   {
-    . = ALIGN(4);
+    . = ALIGN(8);
     _sitcmram = .;
 
     *(.itcmram)
@@ -79,7 +79,7 @@ SECTIONS
     
     *(.text.*main*)
     
-    . = ALIGN(4);
+    . = ALIGN(8);
     _eitcmram = .;
   } >ITCMRAM AT> FLASH
   
@@ -160,7 +160,7 @@ SECTIONS
     heap_top = .;
     . = ALIGN(4);
   } >DTCMRAM
-
+  
   _sidata = LOADADDR(.data);
   .data :
   {
@@ -172,9 +172,9 @@ SECTIONS
     _edata = .;
   } >RAM AT> FLASH
 
-  . = ALIGN(4);
   .bss :
   {
+    . = ALIGN(4);
     _sbss = .;
     __bss_start__ = _sbss;
     *(.bss)

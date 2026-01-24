@@ -11,7 +11,7 @@ AR	 = $(PREFIX)ar
 BOARD?=BOARD_GD32H759I_EVAL
 ENET_PHY?=DP83848
 
-TARGET=gd32h759.bin
+TARGET=$(FAMILY).bin
 LIST=$(FAMILY).list
 MAP=$(FAMILY).map
 SIZE=$(FAMILY).size
@@ -21,13 +21,21 @@ FIRMWARE_DIR=./../firmware-template-gd32/
 
 DEFINES:=$(addprefix -D,$(DEFINES))
 
-include ../firmware-template-gd32/Board.mk
-include ../firmware-template-gd32/Mcu.mk
+include ../common/make/gd32/Board.mk
+include ../common/make/gd32/Mcu.mk
 include ../firmware-template/libs.mk
-include ../firmware-template-gd32/Includes.mk
-include ../firmware-template-gd32/Validate.mk
+include ../common/make/DmxNodeNodeType.mk
+include ../common/make/DmxNodeOutputType.mk
+include ../common/make/gd32/Includes.mk
+include ../common/make/Artnet.mk
+include ../common/make/gd32/mbedtls.mk
+include ../common/make/gd32/Validate.mk
 
 LIBS+=gd32 clib
+
+ifeq ($(findstring NODE_SHOWFILE,$(DEFINES)),NODE_SHOWFILE)
+	LIBS+=showfile
+endif
 
 # The variable for the libraries include directory
 LIBINCDIRS:=$(addprefix -I../lib-,$(LIBS))
@@ -55,6 +63,7 @@ CPPOPS=-std=c++20
 CPPOPS+=-Wnon-virtual-dtor -Woverloaded-virtual -Wnull-dereference -fno-rtti -fno-exceptions -fno-unwind-tables
 CPPOPS+=-Wuseless-cast -Wold-style-cast
 CPPOPS+=-fno-threadsafe-statics
+CPPOPS+=-fno-use-cxa-atexit
 
 LDOPS=--gc-sections --print-gc-sections --print-memory-usage
 
@@ -119,12 +128,15 @@ $(BUILD_DIRS) :
 $(BUILD)startup_$(FAMILY).o : $(FIRMWARE_DIR)/startup_$(FAMILY).S
 	$(AS) $(COPS) -D__ASSEMBLY__ -c $(FIRMWARE_DIR)/startup_$(FAMILY).S -o $(BUILD)startup_$(FAMILY).o
 
-$(BUILD)main.elf: Makefile.GD32 $(LINKER) $(BUILD)startup_$(FAMILY).o $(OBJECTS) $(LIBDEP)
-	$(LD) $(BUILD)startup_$(FAMILY).o $(OBJECTS) -Map $(MAP) -T $(LINKER) $(LDOPS) -o $(BUILD)main.elf $(LIBGD32) $(LDLIBS) $(PLATFORM_LIBGCC) -lgcc
+$(BUILD)hardfault_handler.o : $(FIRMWARE_DIR)/hardfault_handler.c	
+	$(CC) $(COPS) -c $(FIRMWARE_DIR)/hardfault_handler.c -o $(BUILD)hardfault_handler.o
+
+$(BUILD)main.elf: Makefile.GD32 $(LINKER) $(BUILD)startup_$(FAMILY).o $(BUILD)hardfault_handler.o $(OBJECTS) $(LIBDEP)
+	$(LD) $(BUILD)startup_$(FAMILY).o $(BUILD)hardfault_handler.o $(OBJECTS) -Map $(MAP) -T $(LINKER) $(LDOPS) -o $(BUILD)main.elf $(LIBGD32) $(LDLIBS) $(PLATFORM_LIBGCC) -lgcc
 	$(PREFIX)objdump -D $(BUILD)main.elf | $(PREFIX)c++filt > $(LIST)
 	$(PREFIX)size -A -x $(BUILD)main.elf
 
 $(TARGET) : $(BUILD)main.elf
-	$(PREFIX)objcopy $(BUILD)main.elf -O binary $(TARGET) --remove-section=.*tcmram* --remove-section=.*ram* --remove-section=.bkpsram*
+	$(PREFIX)objcopy $(BUILD)main.elf -O binary $(TARGET) --remove-section=.dtcmram* --remove-section=.coherent* --remove-section=.sram1* --remove-section=.sram2* --remove-section=.bkpsram*
 
 $(foreach bdir,$(SRCDIR),$(eval $(call compile-objects,$(bdir))))

@@ -96,7 +96,6 @@
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.925366592" name="GNU Arm Cross Assembler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths.482245562" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/firmware-template-gd32/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/firmware-template-gd32/template}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lib-gd32/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lib-gd32/gd32h7xx/CMSIS/GD/GD32H7xx/Include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lib-gd32/gd32h7xx/GD32H7xx_standard_peripheral/Include}&quot;"/>
@@ -113,7 +112,6 @@
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1319409063" name="GNU Arm Cross C Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.657308153" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" useByScannerDiscovery="true" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/firmware-template-gd32/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/firmware-template-gd32/template}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lib-gd32/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lib-gd32/gd32h7xx/CMSIS/GD/GD32H7xx/Include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lib-gd32/gd32h7xx/GD32H7xx_standard_peripheral/Include}&quot;"/>
@@ -134,7 +132,6 @@
 							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.1271704627" name="GNU Arm Cross C++ Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths.738022685" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths" useByScannerDiscovery="true" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/firmware-template-gd32/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/firmware-template-gd32/template}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lib-gd32/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lib-gd32/gd32h7xx/CMSIS/GD/GD32H7xx/Include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/lib-gd32/gd32h7xx/GD32H7xx_standard_peripheral/Include}&quot;"/>

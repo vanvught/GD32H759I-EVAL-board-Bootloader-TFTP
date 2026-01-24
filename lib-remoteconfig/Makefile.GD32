@@ -8,9 +8,10 @@ ifneq ($(MAKE_FLAGS),)
 		EXTRA_SRCDIR+=src/httpd
 	endif
 else
-	DEFINES+=CONFIG_REMOTECONFIG_MINIMUM
 	EXTRA_SRCDIR+=src/httpd
 endif
 
 include Rules.mk
 include ../firmware-template-gd32/lib/Rules.mk
+
+prerequisites:
