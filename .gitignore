@@ -44,3 +44,4 @@
 udp_send
 
 *.elf
+/common/scripts/gd32/venv
