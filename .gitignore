@@ -45,3 +45,6 @@ udp_send
 
 *.elf
 /common/scripts/gd32/venv
+common/include/dmx/board_bw_opidmx4.h
+common/include/dmx/board_dmx3.h
+common/include/dmx/board_dmx4.h
