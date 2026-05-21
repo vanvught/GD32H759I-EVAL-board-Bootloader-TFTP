@@ -179,10 +179,6 @@
 						<entry excluding="gd32|phy" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/emac"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/emac/gd32"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/emac/phy"/>
-						<entry excluding="apps|apps/tftp" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/net"/>
-						<entry excluding="tftp" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/net/apps"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/net/apps/tftp"/>
-						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src/params"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
