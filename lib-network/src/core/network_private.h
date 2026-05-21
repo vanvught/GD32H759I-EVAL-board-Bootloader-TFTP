@@ -53,8 +53,8 @@ void FreePkt();
 } // namespace emac::eth
 
 namespace network {
-inline void Error(const char* func, const char* s) {
-    printf("%s: %s\n", func, s);
+inline void Error([[maybe_unused]]const char* func, [[maybe_unused]]const char* s) {
+
 }
 
 #define ERROR(s)	Error(__func__, (s))
