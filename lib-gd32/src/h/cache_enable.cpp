@@ -25,8 +25,7 @@
 
 #include "gd32.h"
 
-void CacheEnable()
-{
+void CacheEnable() {
     // Enable I-Cache
     SCB_EnableICache(); // NOLINT
     // Enable D-Cache
