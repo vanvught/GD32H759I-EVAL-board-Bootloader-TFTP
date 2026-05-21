@@ -74,7 +74,7 @@ static void AdcConfig()
     /* enable ADC interface */
     adc_enable(ADC2);
     /* wait for ADC stability */
-    udelay(1000);
+    timing::DelayUs(1000);
     /* ADC calibration mode config */
     adc_calibration_mode_config(ADC2, ADC_CALIBRATION_OFFSET_MISMATCH);
     /* ADC calibration number config */

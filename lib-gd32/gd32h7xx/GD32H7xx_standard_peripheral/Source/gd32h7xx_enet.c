@@ -2796,6 +2796,7 @@ ErrStatus enet_ptpframe_transmit_normal_mode(uint32_t enet_periph, uint8_t buffe
     dma_current_txdesc->status |= ENET_TDES0_LSG | ENET_TDES0_FSG;
     /* enable the DMA transmission */
     dma_current_txdesc->status |= ENET_TDES0_DAV;
+    __DMB();
 
     /* check Tx buffer unavailable flag status */
     dma_tbu_flag = (ENET_DMA_STAT(enet_periph) & ENET_DMA_STAT_TBU);
@@ -2814,6 +2815,7 @@ ErrStatus enet_ptpframe_transmit_normal_mode(uint32_t enet_periph, uint8_t buffe
         do {
             tdes0_ttmss_flag = (dma_current_txdesc->status & ENET_TDES0_TTMSS);
             timeout++;
+            __DMB();
         } while((RESET == tdes0_ttmss_flag) && (timeout < ENET_DELAY_TO));
 
         /* return ERROR due to timeout */
@@ -2826,6 +2828,8 @@ ErrStatus enet_ptpframe_transmit_normal_mode(uint32_t enet_periph, uint8_t buffe
         /* get the timestamp value of the transmit frame */
         timestamp[0] = dma_current_txdesc->buffer1_addr;
         timestamp[1] = dma_current_txdesc->buffer2_next_desc_addr;
+
+
     }
     dma_current_txdesc->buffer1_addr = dma_current_ptp_txdesc ->buffer1_addr ;
     dma_current_txdesc->buffer2_next_desc_addr = dma_current_ptp_txdesc ->buffer2_next_desc_addr;
