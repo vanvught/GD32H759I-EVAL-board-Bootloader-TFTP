@@ -27,7 +27,7 @@
 #include <cstdint>
 
 #include "hal.h"
-#include "gd32/hal_watchdog.h"
+#include "watchdog.h"
 #include "network.h"
 #include "display.h"
 #include "hal_statusled.h"
@@ -38,22 +38,22 @@
 #include "configstore.h"
 #include "gd32.h"
 
-namespace hal
-{
-void RebootHandler() {}
+namespace hal {
+void RebootHandler() {
+}
 } // namespace hal
 
-int main()
-{
-    rcu_periph_clock_enable(KEY_BOOTLOADER_TFTP_RCU_GPIOx);
+int main() {
+	rcu_periph_clock_enable(KEY_BOOTLOADER_TFTP_RCU_GPIOx);
 #if defined(GD32F4XX) || defined(GD32H7XX)
-    rcu_periph_clock_enable(RCU_PMU);
+	rcu_periph_clock_enable(RCU_PMU);
 #if defined(GD32F4XX)
     pmu_backup_ldo_config(PMU_BLDOON_ON);
 #endif
-    rcu_periph_clock_enable(RCU_BKPSRAM);
-    pmu_backup_write_enable();
-    gpio_mode_set(KEY_BOOTLOADER_TFTP_GPIOx, GPIO_MODE_INPUT, GPIO_PUPD_PULLUP, KEY_BOOTLOADER_TFTP_GPIO_PINx);
+	rcu_periph_clock_enable(RCU_BKPSRAM);
+	pmu_backup_write_enable();
+	gpio_mode_set(KEY_BOOTLOADER_TFTP_GPIOx, GPIO_MODE_INPUT, GPIO_PUPD_PULLUP,
+			KEY_BOOTLOADER_TFTP_GPIO_PINx);
 #else
     rcu_periph_clock_enable(RCU_AF);
     rcu_periph_clock_enable(KEY_BOOTLOADER_TFTP_RCU_GPIOx);
@@ -67,61 +67,61 @@ int main()
     gpio_init(KEY_BOOTLOADER_TFTP_GPIOx, GPIO_MODE_IPU, GPIO_OSPEED_50MHZ, KEY_BOOTLOADER_TFTP_GPIO_PINx);
 #endif
 
-    const auto kIsNotRemote = (bkp_data_read(BKP_DATA_1) != 0xA5A5);
-    const auto kIsNotKey = (gpio_input_bit_get(KEY_BOOTLOADER_TFTP_GPIOx, KEY_BOOTLOADER_TFTP_GPIO_PINx));
+	const auto kIsNotRemote = (bkp_data_read(BKP_DATA_1) != 0xA5A5);
+	const auto kIsNotKey = (gpio_input_bit_get(KEY_BOOTLOADER_TFTP_GPIOx,
+			KEY_BOOTLOADER_TFTP_GPIO_PINx));
 
-    if (kIsNotRemote && kIsNotKey)
-    {
-        // https://developer.arm.com/documentation/ka001423/1-0
-        // 1. Disable interrupt response.
-        __disable_irq();
-        // 2. Disable all enabled interrupts in NVIC.
-        memset((uint32_t*)NVIC->ICER, 0xFF, sizeof(NVIC->ICER));
-        /* 3. Disable all enabled peripherals which might generate interrupt requests.
-         *  Clear all pending interrupt flags in those peripherals.
-         *  This part is device-dependent, and you can write it by referring to device datasheet.
-         */
+	if (kIsNotRemote && kIsNotKey) {
+		// https://developer.arm.com/documentation/ka001423/1-0
+		// 1. Disable interrupt response.
+		__disable_irq();
+		// 2. Disable all enabled interrupts in NVIC.
+		memset((uint32_t*) NVIC->ICER, 0xFF, sizeof(NVIC->ICER));
+		/* 3. Disable all enabled peripherals which might generate interrupt requests.
+		 *  Clear all pending interrupt flags in those peripherals.
+		 *  This part is device-dependent, and you can write it by referring to device datasheet.
+		 */
 
-        /* Clear all pending interrupt requests in NVIC. */
-        memset((uint32_t*)NVIC->ICPR, 0xFF, sizeof(NVIC->ICPR));
-        // 4. Disable SysTick and clear its exception pending bit.
-        SysTick->CTRL = 0;
-        SCB->ICSR |= SCB_ICSR_PENDSTCLR_Msk;
-        // 5. Load the vector table address of user application code in to VTOR.
-        SCB->VTOR = FLASH_BASE + OFFSET_UIMAGE;
-        // 6. Use the MSP as the current SP.
-        // Set the MSP with the value from the vector table used by the application.
-        __set_MSP(((unsigned int*)(SCB->VTOR))[0]);
-        // In thread mode, enable privileged access and use the MSP as the current SP.
-        __set_CONTROL(0);
-        // 7. Enable interrupts.
-        __enable_irq();
-        // 8. Call the reset handler
-        const uint32_t* reset_p = (uint32_t*)(FLASH_BASE + OFFSET_UIMAGE + 4);
-        asm volatile("bx %0;" : : "r"(*reset_p));
-    }
+		/* Clear all pending interrupt requests in NVIC. */
+		memset((uint32_t*) NVIC->ICPR, 0xFF, sizeof(NVIC->ICPR));
+		// 4. Disable SysTick and clear its exception pending bit.
+		SysTick->CTRL = 0;
+		SCB->ICSR |= SCB_ICSR_PENDSTCLR_Msk;
+		// 5. Load the vector table address of user application code in to VTOR.
+		SCB->VTOR = FLASH_BASE + OFFSET_UIMAGE;
+		// 6. Use the MSP as the current SP.
+		// Set the MSP with the value from the vector table used by the application.
+		__set_MSP(((unsigned int*) (SCB->VTOR))[0]);
+		// In thread mode, enable privileged access and use the MSP as the current SP.
+		__set_CONTROL(0);
+		// 7. Enable interrupts.
+		__enable_irq();
+		// 8. Call the reset handler
+		const uint32_t *reset_p = (uint32_t*) (FLASH_BASE + OFFSET_UIMAGE + 4);
+		asm volatile("bx %0;" : : "r"(*reset_p));
+	}
 
-    hal::Init();
-    Display display(4);
-    ConfigStore config_store;
-    network::Init();
-    FirmwareVersion fw(SOFTWARE_VERSION, __DATE__, __TIME__);
-    FlashCodeInstall flashcode_install;
+	hal::Init();
+	Display display(4);
+	ConfigStore config_store;
+	network::Init();
+	FirmwareVersion fw(SOFTWARE_VERSION, __DATE__, __TIME__);
+	FlashCodeInstall flashcode_install;
 
-    printf("Remote=%c, Key=%c\n", kIsNotRemote ? 'N' : 'Y', kIsNotKey ? 'N' : 'Y');
-    fw.Print("Bootloader TFTP Server");
+	printf("Remote=%c, Key=%c\n", kIsNotRemote ? 'N' : 'Y',
+			kIsNotKey ? 'N' : 'Y');
+	fw.Print("Bootloader TFTP Server");
 
-    RemoteConfig remote_config(remoteconfig::Output::CONFIG);
+	RemoteConfig remote_config(remoteconfig::Output::CONFIG);
 
-    display.Printf(3, "Bootloader TFTP Srvr");
+	display.Printf(3, "Bootloader TFTP Srvr");
 
-    hal::statusled::SetMode(hal::statusled::Mode::FAST);
-    hal::WatchdogInit();
+	hal::statusled::SetMode(hal::statusled::Mode::kFast);
+	watchdog::Init();
 
-    while (1)
-    {
-        hal::WatchdogFeed();
-        network::Run();
-        hal::Run();
-    }
+	while (1) {
+		watchdog::Feed();
+		network::Run();
+		hal::Run();
+	}
 }
