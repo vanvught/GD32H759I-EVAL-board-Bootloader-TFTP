@@ -48,3 +48,4 @@ udp_send
 common/include/dmx/board_bw_opidmx4.h
 common/include/dmx/board_dmx3.h
 common/include/dmx/board_dmx4.h
+/lib-gd32/device/enet/f
