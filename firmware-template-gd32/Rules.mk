@@ -111,6 +111,13 @@ $(LIBDEP):
 	$(MAKE) -f Makefile.GD32 $(MAKECMDGOALS) 'FAMILY=${FAMILY}' 'BOARD=${BOARD}' 'ENET_PHY=${ENET_PHY}' 'MAKE_FLAGS=$(DEFINES)' -C $@
 
 #
+# Build bin
+#
+
+$(BUILD_DIRS) :
+	mkdir -p $(BUILD_DIRS)
+
+#
 # Startup and support objects
 #
 
@@ -172,6 +179,8 @@ $(TARGET): $(BUILD)main.elf
 		-O binary \
 		$@ \
 		--remove-section=.tcmsram* \
+		--remove-section=.dtcmram* \
+		--remove-section=.coherent* \
 		--remove-section=.sram1* \
 		--remove-section=.sram2* \
 		--remove-section=.ramadd* \
