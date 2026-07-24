@@ -51,3 +51,5 @@ common/include/dmx/board_dmx3.h
 common/include/dmx/board_dmx4.h
 /lib-gd32/device/enet/f
 
+/.cache
+bootloader-tftp/gd32h7xx.bin
