@@ -1,8 +1,8 @@
 /**
- * @file  systick.cpp
+ * @file utils_units.h
  *
  */
-/* Copyright (C) 2021-2025 by Arjan van Vught mailto:info@gd32-dmx.org
+/* Copyright (C) 2025-2026 by Arjan van Vught mailto:info@gd32-dmx.org
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,31 +23,19 @@
  * THE SOFTWARE.
  */
 
+#ifndef COMMON_UTILS_UTILS_UNITS_H_
+#define COMMON_UTILS_UTILS_UNITS_H_
+
 #include <cstdint>
 
-#include "gd32.h"
+namespace common::units {
+inline constexpr uint32_t kUsPerMs = 1'000U;
+inline constexpr uint32_t kMsPerSecond = 1'000U;
+inline constexpr uint32_t kUsPerSecond = 1'000'000U;
 
-volatile uint32_t gv_nSysTickMillis;
+inline constexpr uint32_t kNsPerUs = 1'000U;
+inline constexpr uint32_t kNsPerMs = 1'000'000U;
+inline constexpr uint32_t kNsPerSecond = 1'000'000'000U;
+} // namespace common::units
 
-void SystickConfig()
-{
-    // Setup systick timer for 1000Hz interrupts
-    if (SysTick_Config(SystemCoreClock / 1000U))
-    {
-        while (1)
-        {
-        }
-    }
-
-    gv_nSysTickMillis = 0;
-
-    NVIC_SetPriority(SysTick_IRQn, (1UL << __NVIC_PRIO_BITS) - 1UL); // Lowest priority
-}
-
-extern "C"
-{
-    void SysTick_Handler()
-    {
-        gv_nSysTickMillis = gv_nSysTickMillis + 1;
-    }
-}
+#endif // COMMON_UTILS_UTILS_UNITS_H_
